@@ -5,3 +5,5 @@ electron.js
 !vite.config.js
 dist/
 dist_electron/
+package-lock.json
+yarn.lock

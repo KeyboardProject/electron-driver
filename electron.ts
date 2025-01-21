@@ -1,4 +1,5 @@
-import { app, BrowserWindow, ipcMain, dialog, screen, globalShortcut } from 'electron';
+const { app, BrowserWindow, ipcMain, dialog, screen, globalShortcut } = require('electron');
+import type { BrowserWindow as BrowserWindowType } from 'electron';
 import isDev from 'electron-is-dev';
 import path from 'path';
 import { ComplexReplayRequest, DeleteMacrosRequest, ExportProfileRequest, GetMacroDetailRequest, MouseEvent, KeyboardEvent, GetMacroDetailResponse, ImportProfileRequest, KeyEvent, ListRequest, MacroEvent, ReplayRequest, ReplayTask, StartRequest, StatusResponse, StopReplayRequest, StopRequest } from './generated/input_service';
@@ -67,7 +68,8 @@ function saveSketchToFile(code: string, filePath: string): Promise<void> {
 }
 
 
-let mainWindow: BrowserWindow | null;
+let mainWindow: BrowserWindowType | null;
+let videoPopup: BrowserWindowType | null;
 
 function createWindow(): void {
   mainWindow = new BrowserWindow({
@@ -438,8 +440,6 @@ ipcMain.on('request-update', async (event) => {
 
 });
 
-let videoPopup: BrowserWindow | null;
-
 function showVideoPopup() {
   // 팝업 창 설정
   const { width, height } = screen.getPrimaryDisplay().workAreaSize;
@@ -511,7 +511,7 @@ function startInputListener() {
     isFocused = true;
     videoPopup?.webContents.send('focus-status-changed', isFocused);
 
-    videoPopup?.webContents.on('before-input-event', (event, input) => {
+    videoPopup?.webContents.on('before-input-event', (event: Electron.Event, input: Electron.Input) => {
       if (videoPopup && videoPopup.isFocused()) {
         const { code, control, alt, type } = input;
 
