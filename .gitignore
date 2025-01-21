@@ -1,0 +1,7 @@
+node_modules
+generated/
+electron.js
+*.js
+!vite.config.js
+dist/
+dist_electron/

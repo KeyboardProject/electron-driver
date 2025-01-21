@@ -1,0 +1,108 @@
+{
+  "name": "usb-commander",
+  "version": "0.1.0",
+  "private": true,
+  "main": "electron.js",
+  "build": {
+    "appId": "ccxz84.usb.commander",
+    "productName": "HID-Commander",
+    "asar": false,
+    "target": "win",
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64",
+            "ia32"
+          ]
+        }
+      ],
+      "forceCodeSigning": false
+    },
+    "protocols": {
+      "name": "HID-Commander",
+      "schemes": [
+        "HID-Commander"
+      ]
+    },
+    "directories": {
+      "output": "dist_electron"
+    },
+    "files": [
+      "dist/**/*",
+      "electron.js",
+      "generated",
+      "src/utils/grpc.js",
+      "src/utils/arduino.js",
+      "assets/*",
+      "popup.html"
+    ]
+  },
+  "dependencies": {
+    "@grpc/grpc-js": "^1.9.13",
+    "@testing-library/jest-dom": "^5.17.0",
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/user-event": "^13.5.0",
+    "@types/google-protobuf": "^3.15.12",
+    "bindings": "^1.5.0",
+    "electron-is-dev": "^2.0.0",
+    "google-protobuf": "^3.21.2",
+    "hangul-js": "^0.2.6",
+    "node-sass": "^9.0.0",
+    "os-browserify": "^0.3.0",
+    "path-browserify": "^1.0.1",
+    "play-sound": "^1.1.6",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-modal": "^3.16.1",
+    "react-router-dom": "^6.27.0",
+    "sound-play": "^1.1.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.2.2",
+    "util": "^0.12.5",
+    "web-vitals": "^2.1.4"
+  },
+  "scripts": {
+    "dev": "npm run dev:proto && npm run dev:tsc && npm run dev:parallel",
+    "dev:proto": "powershell -ExecutionPolicy Bypass -File scripts/generate_proto.ps1",
+    "dev:tsc": "tsc -p tsconfig.electron.json",
+    "dev:parallel": "concurrently \"npm run dev:vite\" \"npm run dev:electron\"",
+    "dev:vite": "vite --host 0.0.0.0",
+    "dev:electron": "wait-on tcp:1624 && electron .",
+    "build": "npm run dev:proto && npm run dev:tsc && vite build",
+    "build:electron": "electron-builder",
+    "start": "npm run build && electron ."
+  },
+  "devDependencies": {
+    "@tanstack/eslint-plugin-query": "^5.6.0",
+    "@types/electron": "^1.6.10",
+    "@types/node": "^20.8.7",
+    "@types/react": "^18.2.31",
+    "@types/react-dom": "^18.2.14",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "@vanilla-extract/vite-plugin": "^3.9.0",
+    "@vitejs/plugin-react": "^4.0.3",
+    "concurrently": "^8.2.2",
+    "cross-env": "^7.0.3",
+    "electron": "^27.0.2",
+    "electron-builder": "^22.11.7",
+    "electron-rebuild": "^3.2.9",
+    "eslint-config-airbnb": "19.0.4",
+    "eslint-config-airbnb-typescript": "^17.1.0",
+    "eslint-import-resolver-typescript": "^3.6.1",
+    "eslint-plugin-import": "^2.29.0",
+    "eslint-plugin-jsx-a11y": "6.5.1",
+    "eslint-plugin-react": "7.28.0",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-refresh": "^0.4.3",
+    "eslint-plugin-sort-exports": "^0.8.0",
+    "grpc-tools": "^1.12.4",
+    "protoc-gen-ts": "^0.8.7",
+    "sass": "^1.69.5",
+    "vite": "^4.4.5",
+    "vite-plugin-svgr": "^3.2.0",
+    "wait-on": "^7.0.1"
+  }
+}

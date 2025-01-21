@@ -1,0 +1,33 @@
+@import '../variables.scss';
+
+.macro-page {
+  padding: $container-padding;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-unit * 3;
+
+  &__controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: $spacing-unit * 2;
+  }
+
+  &__ip-section {
+    display: flex;
+    gap: $spacing-unit * 2;
+    align-items: center;
+  }
+
+  &__ip-input {
+    padding: $spacing-unit;
+    border: 1px solid $secondary-color;
+    border-radius: 4px;
+    width: 200px;
+  }
+
+  &__buttons {
+    display: flex;
+    gap: $spacing-unit * 2;
+  }
+} 
