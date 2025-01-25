@@ -13,7 +13,16 @@
     "noUnusedParameters": false,
     "noUnusedLocals": false,
     "noFallthroughCasesInSwitch": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "outDir": "./dist",
+    "rootDir": ".",
+    "baseUrl": "."
   },
-  "include": ["./electron.ts"]
+  "include": [
+    "./electron.ts",
+    "./src/electron/**/*.ts",
+    "./src/utils/**/*.ts",
+    "./generated/**/*.ts"
+  ],
+  "exclude": ["node_modules"]
 }

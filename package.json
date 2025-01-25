@@ -3,40 +3,33 @@
   "version": "0.1.0",
   "private": true,
   "main": "electron.js",
+  "scripts": {
+    "dev": "yarn dev:proto && yarn dev:tsc && yarn dev:parallel",
+    "dev:proto": "powershell -ExecutionPolicy Bypass -File scripts/generate_proto.ps1",
+    "dev:tsc": "tsc -p tsconfig.electron.json",
+    "dev:parallel": "concurrently \"yarn dev:vite\" \"yarn dev:electron\"",
+    "dev:vite": "vite --host 0.0.0.0",
+    "dev:electron": "wait-on tcp:1624 && electron .",
+    "build": "yarn dev:proto && yarn dev:tsc && vite build",
+    "build:electron": "yarn build && yarn copy-for-build && electron-builder",
+    "copy-for-build": "node scripts/prepare-electron-build.js",
+    "postinstall": "electron-builder install-app-deps"
+  },
   "build": {
     "appId": "ccxz84.usb.commander",
     "productName": "HID-Commander",
     "asar": false,
-    "target": "win",
-    "win": {
-      "target": [
-        {
-          "target": "nsis",
-          "arch": [
-            "x64",
-            "ia32"
-          ]
-        }
-      ],
-      "forceCodeSigning": false
-    },
-    "protocols": {
-      "name": "HID-Commander",
-      "schemes": [
-        "HID-Commander"
-      ]
-    },
     "directories": {
-      "output": "dist_electron"
+      "output": "dist_electron",
+      "buildResources": "assets"
     },
     "files": [
-      "dist/**/*",
       "electron.js",
-      "generated",
-      "src/utils/grpc.js",
-      "src/utils/arduino.js",
-      "assets/*",
-      "popup.html"
+      "dist/**/*",
+      "generated/**/*",
+      "assets/**/*",
+      "popup.html",
+      "package.json"
     ]
   },
   "dependencies": {
@@ -61,17 +54,6 @@
     "typescript": "^5.2.2",
     "util": "^0.12.5",
     "web-vitals": "^2.1.4"
-  },
-  "scripts": {
-    "dev": "yarn dev:proto && yarn dev:tsc && yarn dev:parallel",
-    "dev:proto": "powershell -ExecutionPolicy Bypass -File scripts/generate_proto.ps1",
-    "dev:tsc": "tsc -p tsconfig.electron.json",
-    "dev:parallel": "concurrently \"yarn dev:vite\" \"yarn dev:electron\"",
-    "dev:vite": "vite --host 0.0.0.0",
-    "dev:electron": "wait-on tcp:1624 && electron .",
-    "build": "yarn dev:proto && yarn dev:tsc && vite build",
-    "build:electron": "electron-builder",
-    "start": "yarn build && electron ."
   },
   "devDependencies": {
     "@tanstack/eslint-plugin-query": "^5.6.0",

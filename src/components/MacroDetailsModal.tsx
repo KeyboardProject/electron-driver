@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 const { ipcRenderer } = window.require('electron');
 import ModalComponent from './ModalComponent';
 import { KeyEvent } from 'utils/type';
-import { interpretKeyPressAndRelease } from '../utils/utils';
+import { interpretKeyPressAndRelease } from '../utils/utils.ts';
 
 interface MacroDetailsModalProps {
   isOpen: boolean;
@@ -21,7 +21,7 @@ const MacroDetailsModal: React.FC<MacroDetailsModalProps> = ({ isOpen, filename,
   const [macroDetail, setMacroDetail] = useState<Array<MacroEventDetail> | null>(null);
   const [elapsedTimes, setElapsedTimes] = useState<number[]>([]);
 
-  const scrollContainerRef = useRef(null); // 스크롤 컨테이너 ref 추가
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setMacroEvents([]);

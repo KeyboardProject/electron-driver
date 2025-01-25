@@ -112,9 +112,9 @@ const ButtonSection: React.FC =  () => {
         <ComplexReplayComponent onClose={() => handleComplexReplay(false)} runComplexReplay={startComplexReplay} runComplexReplayArduino={startComplexReplayArduino} />
       )}
       <ButtonComponent text="큐브"  onClick={() => handleCube(true)} />
-      {isComplexReplayModalOpen && (
+      {/* {isComplexReplayModalOpen && (
         <ComplexReplayComponent onClose={() => handleCube(false)} runComplexReplay={startComplexReplay} runComplexReplayArduino={startComplexReplayArduino} />
-      )}
+      )} */}
     </div>
   );
 };
