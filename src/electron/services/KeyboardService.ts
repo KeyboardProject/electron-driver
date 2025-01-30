@@ -1,24 +1,29 @@
 import { ClientWritableStream } from '@grpc/grpc-js';
-import GrpcClient from '../../utils/grpc';
-import { KeyboardEvent } from '../../../generated/input_service';
+import { grpcClients } from '../../services/grpc';
+import * as inputService from '../../../generated/input_service';
 
 export default class KeyboardService {
-  private keyboardCall: ClientWritableStream<KeyboardEvent> | null = null;
+  private keyboardCall: ClientWritableStream<inputService.KeyboardEvent> | null = null;
   private lastHidReport: Uint8Array | null = null;
 
   constructor() {
     this.initializeKeyboardStream();
   }
 
-  private initializeKeyboardStream(): void {
+  initializeKeyboardStream(): void {
     if (!this.keyboardCall) {
-      this.keyboardCall = GrpcClient.MacroGrpcClient.sendRemoteKeyEvents();
+      try {
+        console.log('initializeKeyboardStream', grpcClients.macro.client);
+        this.keyboardCall = grpcClients.macro.remoteKeyEvent();
+      } catch (error) {
+        console.error('Failed to initialize keyboard stream:', error);
+      }
     }
   }
 
   handleKeyboardEvent(keyboardEventData: any): void {
     if (this.keyboardCall) {
-      const request: KeyboardEvent = new KeyboardEvent(keyboardEventData);
+      const request = inputService.KeyboardEvent.create(keyboardEventData);
       this.keyboardCall.write(request);
     } else {
       console.warn('keyboardCall is not initialized');
@@ -46,8 +51,7 @@ export default class KeyboardService {
       'KeyM': 0x10, 'KeyN': 0x11, 'KeyO': 0x12, 'KeyP': 0x13,
       'KeyQ': 0x14, 'KeyR': 0x15, 'KeyS': 0x16, 'KeyT': 0x17,
       'KeyU': 0x18, 'KeyV': 0x19, 'KeyW': 0x1A, 'KeyX': 0x1B,
-      'KeyY': 0x1C, 'KeyZ': 0x1D,
-      // ... 나머지 키 코드들
+      'KeyY': 0x1C, 'KeyZ': 0x1D
     };
     return HID_KEY_CODES[code] || 0x00;
   }

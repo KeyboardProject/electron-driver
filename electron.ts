@@ -1,6 +1,9 @@
 import { app } from 'electron';
 import WindowService from './src/electron/services/WindowService';
 import IpcService from './src/electron/services/IpcService';
+import { BrowserWindow } from 'electron';
+import path from 'path';
+import isDev from 'electron-is-dev';
 
 class ElectronApp {
   private windowService: WindowService;
@@ -33,6 +36,31 @@ class ElectronApp {
       }
     });
   }
+
+  createWindow(): void {
+    const mainWindow = new BrowserWindow({
+    width: 1368,
+    height: 768,
+    webPreferences: {
+      nodeIntegration: true,
+      contextIsolation: false,
+    },
+  });
+
+  const startURL = isDev
+    ? 'http://localhost:1624'
+      : `file://${path.join(__dirname, 'dist', 'index.html')}`;  // dist 폴더 경로 수정
+
+  mainWindow.loadURL(startURL);
+
+    if (isDev) {
+      mainWindow.webContents.openDevTools();
+    }
+
+  mainWindow.on('closed', () => {
+    mainWindow = null;
+  });
+}
 }
 
 const electronApp = new ElectronApp();

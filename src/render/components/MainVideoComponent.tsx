@@ -11,6 +11,7 @@ const MainVideoComponent: React.FC = () => {
   useEffect(() => {
     // Electron에서 비디오 프레임 수신
     ipcRenderer.on('stream-video-frame', (_, data) => {
+      console.log('stream-video-frame', data);
       if (data.frame && data.frame.array && data.frame.array[0]) {
         const uint8Array = new Uint8Array(data.frame.array[0]);
         const base64String = Buffer.from(uint8Array).toString('base64');

@@ -1,18 +1,18 @@
 import { ClientWritableStream } from '@grpc/grpc-js';
-import GrpcClient from '../../utils/grpc';
-import { MouseEvent } from '../../../generated/input_service';
+import { grpcClients } from '../../services/grpc';
+import * as inputService from '../../../generated/input_service';
 
 export default class MouseService {
-  private mouseCall: ClientWritableStream<MouseEvent> | null = null;
-  private reconnectingRemote = false;
+  private mouseCall: ClientWritableStream<inputService.MouseEvent> | null = null;
+  private reconnectingRemote: boolean = false;
 
   constructor() {
     this.initializeMouseStream();
   }
 
-  private initializeMouseStream(): void {
+  initializeMouseStream(): void {
     if (!this.mouseCall) {
-      this.mouseCall = GrpcClient.MacroGrpcClient.sendRemoteMouseEvents();
+      this.mouseCall = grpcClients.macro.remoteMouseEvent();
       this.setupStreamHandlers();
     }
   }
@@ -26,7 +26,6 @@ export default class MouseService {
 
   private handleStreamDisconnect(): void {
     if (this.reconnectingRemote) return;
-
     this.reconnectingRemote = true;
     this.mouseCall?.end();
 
@@ -38,7 +37,7 @@ export default class MouseService {
 
   handleMouseEvent(mouseEventData: any): void {
     if (this.mouseCall && !this.mouseCall.writableEnded) {
-      const request = new MouseEvent(mouseEventData);
+      const request = inputService.MouseEvent.create(mouseEventData);
       this.mouseCall.write(request);
     } else {
       console.warn('mouseCall is not initialized or has ended');

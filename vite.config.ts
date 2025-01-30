@@ -4,22 +4,17 @@ import path from 'path';
 
 export default defineConfig({
   plugins: [react()],
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, './src'),
+    }
+  },
   server: {
     port: 1624,
   },
-  base: './',
-  resolve: {
-    alias: {
-      '@': path.resolve(__dirname, './src')
-    },
-    extensions: ['.js', '.ts', '.jsx', '.tsx', '.json']
-  },
-  optimizeDeps: {
-    esbuildOptions: {
-      target: 'es2020'
-    }
-  },
   build: {
-    target: 'es2020'
-  }
+    outDir: 'dist',
+    sourcemap: true,
+  },
+  base: './',
 }); 

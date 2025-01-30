@@ -1,8 +1,8 @@
 import { VideoServiceClient, VideoRequest, VideoFrame, Empty } from 'generated/video_service';
-import { grpcConfig, getGrpcEndpoint } from '../config';
+import { grpcConfig, getGrpcEndpoint, updateGrpcAddress } from '../config';
 
 export class VideoClient {
-  private client: VideoServiceClient;
+  public client: VideoServiceClient;
   private address: string;
 
   constructor(address: string = grpcConfig.defaultAddress) {
@@ -16,17 +16,23 @@ export class VideoClient {
   }
 
   public updateAddress(newAddress: string): void {
+    console.log('video updateAddress', newAddress);
     if (this.address !== newAddress) {
+      updateGrpcAddress(newAddress);
       this.address = newAddress;
       this.client = this.createClient();
     }
   }
 
   public streamVideo() {
-    return this.client.StreamVideo(new VideoRequest());
+    return this.client.streamVideo({});
   }
 
   public streamMinimapVideo() {
-    return this.client.CalculateMinimap(new Empty());
+    return this.client.calculateMinimap({});
+  }
+
+  public streamCube() {
+    return this.client.streamCube({});
   }
 } 

@@ -11,7 +11,7 @@ export const useGrpcConnection = () => {
     ipcRenderer.send('change-ip-address', ipToSet);
     console.log('IP Address changed to:', ipToSet);
     
-    ipcRenderer.send('connect-video-stream');
+    // ipcRenderer.send('connect-video-stream');
     ipcRenderer.send('view-video-stream');
   }, [ipAddress]);
 

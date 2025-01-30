@@ -19,18 +19,13 @@ const ComplexReplayComponent: React.FC<ComplexReplayComponentProps> = ({ onClose
   const [frameData, setFrameData] = useState<string | null>(null);
 
   React.useEffect(() => {
-    // Electron에서 비디오 프레임 수신
     ipcRenderer.on('stream-minimap-video-frame', (_, data) => {
-      if (data.frame && data.frame.array && data.frame.array[0]) {
-        const uint8Array = new Uint8Array(data.frame.array[0]);
-        const base64String = Buffer.from(uint8Array).toString('base64');
-        setFrameData(base64String); // frameData 상태 업데이트
-      } else {
-        console.error('Invalid frame data format');
+      if (data.frame) {  // frame이 Buffer 타입으로 전달됨
+        const base64String = Buffer.from(data.frame).toString('base64');
+        setFrameData(base64String);
       }
     });
 
-    // 컴포넌트가 언마운트될 때 이벤트 리스너 정리
     return () => {
       ipcRenderer.removeAllListeners('stream-minimap-video-frame');
     };

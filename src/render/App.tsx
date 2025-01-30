@@ -24,7 +24,7 @@ const App: React.FC = () => {
     if (ipToSet) {
       ipcRenderer.send('change-ip-address', ipToSet);
       console.log('IP Address changed to:', ipToSet);
-      ipcRenderer.send('connect-video-stream');
+      // ipcRenderer.send('connect-video-stream');
       ipcRenderer.send('view-video-stream');
     } else {
       console.error('Invalid IP address:', ipAddress);

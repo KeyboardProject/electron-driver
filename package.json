@@ -4,15 +4,18 @@
   "private": true,
   "main": "electron.js",
   "scripts": {
-    "dev": "yarn dev:proto && yarn dev:tsc && yarn dev:parallel",
+    "dev": "yarn dev:proto && yarn dev:parallel",
     "dev:proto": "powershell -ExecutionPolicy Bypass -File scripts/generate_proto.ps1",
-    "dev:tsc": "tsc -p tsconfig.electron.json",
-    "dev:parallel": "concurrently \"yarn dev:vite\" \"yarn dev:electron\"",
+    "dev:parallel": "concurrently \"yarn dev:vite\" \"yarn dev:electron-build\" \"yarn dev:electron\"",
     "dev:vite": "vite --host 0.0.0.0",
-    "dev:electron": "wait-on tcp:1624 && electron .",
-    "build": "yarn dev:proto && yarn dev:tsc && vite build",
-    "build:electron": "yarn build && yarn copy-for-build && electron-builder",
-    "copy-for-build": "node scripts/prepare-electron-build.js",
+    "dev:electron-build": "vite build -c vite.electron.config.js --watch",
+    "dev:electron": "wait-on tcp:1624 && wait-on ./electron.js && electron .",
+    "clean": "rimraf dist && rimraf dist_electron || true",
+    "copy-files": "node scripts/copy-electron-files.js",
+    "build:web": "vite build",
+    "build:electron": "vite build -c vite.electron.config.js",
+    "build": "yarn dev:proto && yarn build:web && yarn build:electron",
+    "package": "yarn build && electron-builder",
     "postinstall": "electron-builder install-app-deps"
   },
   "build": {
@@ -26,12 +29,36 @@
     "files": [
       "electron.js",
       "dist/**/*",
-      "generated/**/*",
       "assets/**/*",
-      "popup.html",
-      "package.json"
-    ]
+      "popup.html"
+    ],
+    "extraResources": [
+      {
+        "from": "generated",
+        "to": "generated",
+        "filter": ["**/*"]
+      }
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    }
   },
+  "author": {
+    "name": "ccxz84",
+    "email": "your.email@example.com"
+  },
+  "description": "USB HID Commander Application",
   "dependencies": {
     "@grpc/grpc-js": "^1.9.13",
     "@testing-library/jest-dom": "^5.17.0",
@@ -80,10 +107,11 @@
     "eslint-plugin-react-refresh": "^0.4.3",
     "eslint-plugin-sort-exports": "^0.8.0",
     "grpc-tools": "^1.12.4",
-    "protoc-gen-ts": "^0.8.7",
+    "rimraf": "^6.0.1",
     "sass": "^1.69.5",
     "vite": "^4.4.5",
     "vite-plugin-svgr": "^3.2.0",
-    "wait-on": "^7.0.1"
+    "wait-on": "^7.0.1",
+    "ts-proto": "^1.165.3"
   }
 }

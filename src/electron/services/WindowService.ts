@@ -28,27 +28,40 @@ export default class WindowService {
   }
 
   createVideoWindow(): void {
-    const { width, height } = this.getPrimaryDisplaySize();
+    if (this.videoWindow && !this.videoWindow.isDestroyed()) {
+      this.videoWindow.show();
+      return;
+    }
+
     this.videoWindow = new BrowserWindow({
-      width: 300,
-      height: 80,
-      frame: true,
-      autoHideMenuBar: true,
-      resizable: true,
-      maximizable: true,
-      minimizable: true,
-      fullscreenable: true,
+      width: 800,
+      height: 600,
       webPreferences: {
         nodeIntegration: true,
         contextIsolation: false,
-      },
+      }
     });
 
     const startURL = isDev
-      ? 'http://localhost:1624#video'
-      : `file://${path.join(__dirname, '../app/dist/index.html')}`;
+      ? 'http://localhost:1624/#/video'
+      : `file://${path.join(__dirname, '../app/dist/index.html')}#video`;
 
     this.videoWindow.loadURL(startURL);
+    
+    this.videoWindow.webContents.on('did-finish-load', () => {
+      console.log('Video window loaded');
+    });
+
+    if (isDev) {
+      this.videoWindow.webContents.openDevTools();
+    }
+
+    this.videoWindow.on('closed', () => {
+      console.log('Video window closed');
+      this.videoWindow = null;
+    });
+
+    return this.videoWindow;
   }
 
   hasMainWindow(): boolean {

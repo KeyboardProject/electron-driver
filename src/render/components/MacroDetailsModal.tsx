@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 const { ipcRenderer } = window.require('electron');
 import ModalComponent from './ModalComponent';
 import { KeyEvent } from 'utils/type';
-import { interpretKeyPressAndRelease } from '../utils/utils.ts';
+import { interpretKeyPressAndRelease } from '../../utils/utils.ts';
 
 interface MacroDetailsModalProps {
   isOpen: boolean;
@@ -61,6 +61,7 @@ const MacroDetailsModal: React.FC<MacroDetailsModalProps> = ({ isOpen, filename,
 
       ipcRenderer.send('start-replay-debug', filename);
       ipcRenderer.on('macro-event', (event, macroEvent) => {
+        console.log('macro-event', macroEvent);
         setMacroEvents(prev => [...prev, macroEvent]);
       });
     }
